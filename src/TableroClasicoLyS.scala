@@ -72,6 +72,36 @@ object TableroClasicoLyS extends TableroJuego:
     else
       None
 
+  def bucleJuego(tablero: TableroJuego, estado:Estado):Jugador =
+    //1.pintamos el tablero
+    tablero.pintarTablero(estado)
+    //2.Calculamos los mov posibles del jugador que tiene el turno
+    val movimientos = estado.turno match
+      case Jugador.Liebre => MovimientoLiebre.movimientosPosibles(tablero,estado)
+      case Jugador.Sabuesos => MovimientoSabueso.movimientosPosiblePorSabueso(tablero,estado)
+    //3.Mostramos por pantalla los movimientos del jugador que tiene el turno 
+    movimientos.zipWithIndex.foreach{case(mov, i) => println(s"$i,$mov")}
+    //4. Leer elección del jugador
+    val eleccion = scala.io.StdIn.readLine().toInt
+    //Se ejecuta el movimiento y se actualiza el estado
+    val nuevaPos = movimientos.toSeq(eleccion)
+    val nuevoEstado =
+      if (estado.turno == Jugador.Liebre) 
+        Estado(Liebre = nuevaPos.asInstanceOf[Posicion], Sabuesos = estado.Sabuesos, turno = Jugador.Sabuesos)
+      else
+        val dupla = nuevaPos.asInstanceOf[(Posicion,Posicion)]
+        val origen = dupla._1
+        val destino = dupla._2
+        Estado(Liebre= estado.Liebre,Sabuesos = (estado.Sabuesos - origen + destino),turno = Jugador.Liebre)
+    tablero.pintarTablero(nuevoEstado)    
+    esFinPartida(nuevoEstado) match
+      case Some(ganador) =>
+        println(s"Ha ganado: $ganador!")
+        ganador
+      case None => bucleJuego(tablero,nuevoEstado)
+
+
+
 
 
 
