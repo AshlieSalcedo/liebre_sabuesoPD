@@ -1,15 +1,24 @@
+object PruebaTablero extends App:
+  // Mostramos las posiciones iniciales
+  println("Posición inicial de la liebre: " + TableroClasicoLyS.posicionInicialLiebre)
+  println("Posiciones iniciales de los sabuesos: " + TableroClasicoLyS.posicionesInicialesSabuesos)
+  println("Meta de la liebre: " + TableroClasicoLyS.posicionMetaLiebre)
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-@main
-def main(): Unit = {
-  //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-  // to see how IntelliJ IDEA suggests fixing it.
-  (1 to 5).map(println)
+  // Probamos movimientos desde cada nodo
+  val todasPosiciones = Set(
+    TableroClasicoLyS.I1A, TableroClasicoLyS.MA, TableroClasicoLyS.D1A,
+    TableroClasicoLyS.I2M, TableroClasicoLyS.I1M, TableroClasicoLyS.MM, TableroClasicoLyS.D1M, TableroClasicoLyS.D2M,
+    TableroClasicoLyS.I1B, TableroClasicoLyS.MB, TableroClasicoLyS.D1B
+  )
 
-  for (i <- 1 to 5) {
-    //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-    // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-    println(s"i = $i")
+  todasPosiciones.foreach { pos =>
+    println(s"Movimientos posibles desde $pos: ${TableroClasicoLyS.movimientosDesde(pos)}")
   }
-}
 
+  // Pintamos el tablero en el estado inicial
+  val estadoInicial = Estado(
+    Liebre = TableroClasicoLyS.posicionInicialLiebre,
+    Sabuesos = TableroClasicoLyS.posicionesInicialesSabuesos,
+    turno = Estado.sortearTurno()
+  )
+  TableroClasicoLyS.pintarTablero(estadoInicial)

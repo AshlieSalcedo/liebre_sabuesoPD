@@ -11,5 +11,13 @@ case object MovimientoSabueso extends MovimientoFicha:
       tablero.movimientosDesde(s).filter(p => p.x >= s.x)
     }) -- estado.ocupadas
   def movimientosPosiblePorSabueso(tablero:TableroJuego, estado:Estado): Set [(Posicion,Posicion)]=
-    estado.Sabuesos.flatMap{s=> movimientosPosibles(tablero, estado).filter(p=>tablero.movimientosDesde(s).contains(p)).map(p=>(s,p))}
+    //Creamos una función auxiliar para obtener los pares de cada sabueso 
+    def aux(pos:Posicion):Set[(Posicion,Posicion)]=
+      val movimientos = tablero.movimientosDesde(pos).filter(p=> p.x >= pos.x)
+      val movSinOcupados = movimientos -- estado.ocupadas
+      movSinOcupados.map(dest => (pos, dest))
+      //devolvemos el Set de pares de cada sabueso con sus posibles movimientos
+    estado.Sabuesos.flatMap(s=>aux(s))  
+      
+      
     

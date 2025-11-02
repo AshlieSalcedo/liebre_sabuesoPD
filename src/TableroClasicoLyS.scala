@@ -55,14 +55,27 @@ object TableroClasicoLyS extends TableroJuego:
   override def pintarTablero(estado: Estado): Unit =
 
     val s = pintarNodo(_, estado)
-    println(s" ${s(I1A)}-----${s(MA)}-----${s(D1A)}")
-    println(" ╱ | \\ | / | \\")
-    println(s" ${s(I2M)}---${s(I1M)}-----${s(MM)}-----${s(D1M)}---${s(D2M)}")
-    println(" \\ | / | \\ | /")
-    println(s" ${s(I1B)}-----${s(MB)}-----${s(D1B)}")
+    println(s"      ${s(I1A)}-----${s(MA)}-----${s(D1A)}")
+    println("    ╱ |  \\  |  /  | \\")
+    println(s"   ${s(I2M)}--${s(I1M)}-----${s(MM)}-----${s(D1M)}--${s(D2M)}")
+    println("    \\ |  /  |   \\ | /")
+    println(s"      ${s(I1B)}-----${s(MB)}-----${s(D1B)}")
   
   // --- Comprueba si ha terminado la partida ---
   def esFinPartida(estado: Estado): Option[Jugador] =
+    //la liebre gana si ha llegado a la posición de meta
+    if estado.Liebre == posicionMetaLiebre then
+      Some(Jugador.Liebre)
+    //Los sabuesos ganan si la liebre no tiene más posiciones a las que moverse
+    else if MovimientoLiebre.movimientosPosibles(this,estado).isEmpty then
+      Some(Jugador.Sabuesos)
+    else
+      None
+
+
+
+
+
      
 
 
