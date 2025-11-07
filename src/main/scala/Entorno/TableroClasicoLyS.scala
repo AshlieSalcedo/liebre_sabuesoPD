@@ -107,7 +107,58 @@ object TableroClasicoLyS extends TableroJuego:
     //3.Mostramos por pantalla los movimientos del jugador que tiene el turno
 
     //Hay que cambiar esto para hacerlo bien, salto de linea al final de la ultima opcion y division de opciones por bicho
-    movimientos.zipWithIndex.foreach{case(mov, i) => println(s"$i,$mov")}
+    //movimientos.zipWithIndex.foreach{case(mov, i) => println(s"$i,$mov")}
+    @tailrec
+    def imprimirMovimientos(movimientos: Set[(Entes.Posicion, Entes.Posicion)], indiceCriatura: Int = 1, indicesYaUsados: Int = 1, listaYaSequenciados: Set[(Int, Entes.Posicion, Entes.Posicion)] = Set()): Set[(Int, Entes.Posicion, Entes.Posicion)] =
+
+
+      @tailrec
+      def imprimirAux(lista: Set[Entes.Posicion], posicionBichoSiendoListado: Entes.Posicion, indiceOpcion: Int = 1, listaSiendoSequenciada: Set[(Int, Entes.Posicion, Entes.Posicion)] = Set()): Set[(Int, Entes.Posicion, Entes.Posicion)]  =
+
+        if(lista.size > 1)
+
+          val posicion = lista.head
+          println(indiceOpcion + ") " + posicion.getCoordenadas())
+          imprimirAux(lista - posicion, posicionBichoSiendoListado, indiceOpcion + 1, listaSiendoSequenciada ++ Set((indiceOpcion, posicionBichoSiendoListado, posicion)))
+
+        else if (lista.size == 1)
+
+          println(indiceOpcion + ") " + lista.head.getCoordenadas() + "\n")
+          imprimirAux(lista - lista.head, posicionBichoSiendoListado, indiceOpcion + 1, listaSiendoSequenciada ++ Set((indiceOpcion, posicionBichoSiendoListado, lista.head)))
+
+        else
+
+          listaSiendoSequenciada
+
+
+
+      if (estado.turno == Entes.Jugador.Liebre)
+
+        val posicionLiebre = movimientos.head._1
+        println("La liebre que esta en " +  posicionLiebre.getCoordenadas() + " puede moverse a:\n")
+        val posicionesPosibles = movimientos.filter(m => m._1 == posicionLiebre).map(n => n._2)
+        val indiceMovimientos = imprimirAux(posicionesPosibles, posicionLiebre)
+        indiceMovimientos
+
+      else
+
+        if(movimientos.nonEmpty)
+
+          val posicionSabueso = movimientos.head._1
+          println("El sabueso número " + indiceCriatura + " que esta en " + posicionSabueso.getCoordenadas() + " puede moverse a:\n")
+          val posicionesPosiblesParaElSabueso = movimientos.filter(m => m._1 == posicionSabueso)
+          val listaAImprimir = posicionesPosiblesParaElSabueso.map(n => n._2)
+          val indiceMovimientos = imprimirAux(listaAImprimir, posicionSabueso, indicesYaUsados)
+          imprimirMovimientos(movimientos -- posicionesPosiblesParaElSabueso, indiceCriatura+1, indiceMovimientos.map(m => m._1).max + 1, listaYaSequenciados ++ indiceMovimientos)
+
+        else
+
+          listaYaSequenciados
+
+
+
+
+    val listaSequenciada = imprimirMovimientos(movimientos)
 
 
     //4. Leer elección del jugador
@@ -117,20 +168,21 @@ object TableroClasicoLyS extends TableroJuego:
 
     //Se ejecuta el movimiento y se actualiza el estado
 
-    val nuevaPos = movimientos.toSeq(eleccion)
+    val datosSeleccionados = listaSequenciada.filter(m => m._1 == eleccion)
+    val nuevaPos = datosSeleccionados.map(n => n._3).head//coger la lista ya sequenciada y hacer una busqueda por opcion filtrando con un map
+
     val nuevoEstado =
 
       if (estado.turno == Entes.Jugador.Liebre)
 
-        Estado(Liebre = nuevaPos.asInstanceOf[Entes.Posicion], Sabuesos = estado.Sabuesos, turno = Entes.Jugador.Sabuesos)
+        Estado(Liebre = nuevaPos, Sabuesos = estado.Sabuesos, turno = Entes.Jugador.Sabuesos)
 
       else
+        
+        Estado(Liebre= estado.Liebre,Sabuesos = estado.Sabuesos - datosSeleccionados.head._2 + datosSeleccionados.head._3 ,turno = Entes.Jugador.Liebre)
 
-        val dupla = nuevaPos.asInstanceOf[(Entes.Posicion,Entes.Posicion)]
-        val origen = dupla._1
-        val destino = dupla._2
-        Estado(Liebre= estado.Liebre,Sabuesos = (estado.Sabuesos - origen + destino),turno = Entes.Jugador.Liebre)
-
+    
+    
     esFinPartida(nuevoEstado) match
       case Some(ganador) =>
         println(s"Ha ganado: $ganador!")
