@@ -1,0 +1,147 @@
+package Entorno
+
+import scala.annotation.tailrec
+
+object TableroClasicoLyS extends TableroJuego:
+
+  //Aqui tenemos nuestros nodos
+
+  private val I1A = Entes.Posicion(Columna.I1,Fila.A)
+  private val MA = Entes.Posicion(Columna.M,Fila.A)
+  private val D1A = Entes.Posicion(Columna.D1,Fila.A)
+  private val I2M = Entes.Posicion(Columna.I2, Fila.M)
+  private val I1M = Entes.Posicion(Columna.I1,Fila.M)
+  private val MM = Entes.Posicion(Columna.M,Fila.M)
+  private val D1M = Entes.Posicion(Columna.D1, Fila.M)
+  private val D2M = Entes.Posicion(Columna.D2, Fila.M)
+  private val I1B = Entes.Posicion(Columna.I1,Fila.B)
+  private val MB= Entes.Posicion(Columna.M,Fila.B)
+  private val D1B= Entes.Posicion(Columna.D1,Fila.B)
+
+
+  //Aqui tenemos nuestras listas de adyacencia
+  private val adyacencias:Map[Entes.Posicion, Set[Entes.Posicion]] =
+
+    Map(
+
+      I1A -> Set(I2M,I1M,MM,MA),
+      MA -> Set(I1A,MM,D1A),
+      D1A -> Set(MA,MM,D1M,D2M),
+      I2M -> Set(I1A,I1M,I1B),
+      I1M -> Set(I1A,I2M,I1B,MM),
+      MM -> Set(MA,I1A,I1M,I1B,MB,D1B,D1M,D1A),
+      D1M -> Set(D1A,MM,D1B,D2M),
+      D2M -> Set(D1A,D1M,D1B),
+      I1B -> Set(I2M,I1M,MM,MB),
+      MB -> Set(MM,I1B,D1B),
+      D1B -> Set(D2M,D1M,MM,MB)
+
+    )
+
+
+  
+  def movimientosDesde(p: Entes.Posicion): Set[Entes.Posicion] = adyacencias.getOrElse(p,Set.empty) //en caso de que no sea una posición válida
+
+
+  // --- Posiciones iniciales de la liebre y sabuesos ---
+  def posicionInicialLiebre: Entes.Posicion = D2M
+
+  def posicionesInicialesSabuesos: Set[Entes.Posicion] = Set(I1A,I2M,I1B)
+
+  def posicionMetaLiebre: Entes.Posicion = I2M
+
+
+  
+  // --- Pintado ---
+  private def pintarNodo(p: Entes.Posicion, estado: Estado): String =
+
+    val RESET = "\u001B[0m"
+    val ROJO = "\u001B[31m"
+    val AZUL = "\u001B[34m"
+    val BLANCO = "\u001B[37m"
+    if (estado.Liebre == p) s"${ROJO}L${RESET}"
+    else if (estado.Sabuesos.contains(p)) s"${AZUL}S${RESET}"
+    else s"${BLANCO}o${RESET}"
+
+
+  override def pintarTablero(estado: Estado): Unit =
+
+    val s = pintarNodo(_, estado)
+    println(s"      ${s(I1A)}-----${s(MA)}-----${s(D1A)}")
+    println("    ╱ |  \\  |  /  | \\")
+    println(s"   ${s(I2M)}--${s(I1M)}-----${s(MM)}-----${s(D1M)}--${s(D2M)}")
+    println("    \\ |  /  |   \\ | /")
+    println(s"      ${s(I1B)}-----${s(MB)}-----${s(D1B)}")
+
+
+
+  // --- Comprueba si ha terminado la partida ---
+  def esFinPartida(estado: Estado): Option[Entes.Jugador] =
+
+    //la liebre gana si ha llegado a la posición de meta
+    //Los sabuesos ganan si la liebre no tiene más posiciones a las que moverse
+
+    if estado.Liebre == posicionMetaLiebre
+    then Some(Entes.Jugador.Liebre)
+    else if Entes.MovimientoLiebre.movimientosPosibles(this,estado).isEmpty
+    then Some(Entes.Jugador.Sabuesos)
+    else None
+
+
+
+  @tailrec
+  def bucleJuego(tablero: TableroJuego, estado:Estado):Entes.Jugador =
+
+    //1.pintamos el tablero
+
+    tablero.pintarTablero(estado)
+
+
+    //2.Calculamos los mov posibles del jugador que tiene el turno
+
+    val movimientos = estado.turno match
+      case Entes.Jugador.Liebre => Entes.MovimientoLiebre.movimientosPosibles(tablero,estado)
+      case Entes.Jugador.Sabuesos => Entes.MovimientoSabueso.movimientosPosiblePorSabueso(tablero,estado)
+
+
+    //3.Mostramos por pantalla los movimientos del jugador que tiene el turno
+
+    movimientos.zipWithIndex.foreach{case(mov, i) => println(s"$i,$mov")}
+
+
+    //4. Leer elección del jugador
+
+    val eleccion = scala.io.StdIn.readLine().toInt
+
+
+    //Se ejecuta el movimiento y se actualiza el estado
+
+    val nuevaPos = movimientos.toSeq(eleccion)
+    val nuevoEstado =
+
+      if (estado.turno == Entes.Jugador.Liebre)
+
+        Estado(Liebre = nuevaPos.asInstanceOf[Entes.Posicion], Sabuesos = estado.Sabuesos, turno = Entes.Jugador.Sabuesos)
+
+      else
+
+        val dupla = nuevaPos.asInstanceOf[(Entes.Posicion,Entes.Posicion)]
+        val origen = dupla._1
+        val destino = dupla._2
+        Estado(Liebre= estado.Liebre,Sabuesos = (estado.Sabuesos - origen + destino),turno = Entes.Jugador.Liebre)
+
+    esFinPartida(nuevoEstado) match
+      case Some(ganador) =>
+        println(s"Ha ganado: $ganador!")
+        ganador
+      case None => bucleJuego(tablero,nuevoEstado)
+
+
+
+
+
+
+
+     
+
+

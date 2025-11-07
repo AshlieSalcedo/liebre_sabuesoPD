@@ -1,19 +1,20 @@
-
+package Entorno
 
 trait TableroJuego:
+  
   // --- Devuelve las posiciones accesibles desde una posición ---
-  def movimientosDesde(p: Posicion): Set[Posicion]
+  def movimientosDesde(p: Entes.Posicion): Set[Entes.Posicion]
 
   // --- Posiciones iniciales de la liebre y sabuesos ---
-  def posicionInicialLiebre: Posicion
+  def posicionInicialLiebre: Entes.Posicion
 
-  def posicionesInicialesSabuesos: Set[Posicion]
+  def posicionesInicialesSabuesos: Set[Entes.Posicion]
 
-  def posicionMetaLiebre: Posicion
+  def posicionMetaLiebre: Entes.Posicion
 
   // --- Pinta el tablero para un estado dado
   def pintarTablero(estado: Estado): Unit
 
   // --- Comprueba si ha terminado la partida ---
-  def esFinPartida(estado: Estado): Option[Jugador]
+  def esFinPartida(estado: Estado): Option[Entes.Jugador]
 
