@@ -71,7 +71,7 @@ object TableroClasicoLyS extends TableroJuego:
     println("    ╱ |  \\  |  /  | \\")
     println(s"   ${s(I2M)}--${s(I1M)}-----${s(MM)}-----${s(D1M)}--${s(D2M)}")
     println("    \\ |  /  |   \\ | /")
-    println(s"      ${s(I1B)}-----${s(MB)}-----${s(D1B)}")
+    println(s"      ${s(I1B)}-----${s(MB)}-----${s(D1B)}\n")
 
 
 
@@ -106,6 +106,7 @@ object TableroClasicoLyS extends TableroJuego:
 
     //3.Mostramos por pantalla los movimientos del jugador que tiene el turno
 
+    //Hay que cambiar esto para hacerlo bien, salto de linea al final de la ultima opcion y division de opciones por bicho
     movimientos.zipWithIndex.foreach{case(mov, i) => println(s"$i,$mov")}
 
 
