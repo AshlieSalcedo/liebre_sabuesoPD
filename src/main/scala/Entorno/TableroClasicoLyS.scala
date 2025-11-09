@@ -95,10 +95,10 @@ object TableroClasicoLyS extends TableroJuego:
     else None
 
 
-/*
 
 
-  BUCLE DE JUEGO SIN HEURISTICAS
+
+  //BUCLE DE JUEGO SIN HEURISTICAS
 
 
 
@@ -176,7 +176,33 @@ object TableroClasicoLyS extends TableroJuego:
 
     //4. Leer elección del jugador
 
-    val eleccion = scala.io.StdIn.readLine().toInt
+    @tailrec
+    def elegido: Int =
+
+      try {
+
+
+        val elegido = scala.io.StdIn.readLine().toInt
+
+        if (listaSequenciada.exists(m => m._1 == elegido))
+
+          elegido
+
+        else
+
+          throw new Exception("\n Elija una opción válida, por favor.\n")
+
+
+      } catch {
+
+        case e: Throwable =>
+
+          println("\nIntroduzca un número, por favor.\n")
+          elegido
+
+      }
+
+    val eleccion = elegido
 
 
     //Se ejecuta el movimiento y se actualiza el estado
@@ -204,17 +230,16 @@ object TableroClasicoLyS extends TableroJuego:
         println(s"Ha ganado: $ganador!")
         ganador
 
-      case None => bucleJuego(tablero, nuevoEstado)
-
-
-  */
-
-
-  /*
+      case None => bucleJuegoBasico(tablero, nuevoEstado)
 
 
 
-    BUCLE DE JUEGO CON HEURISTICA DE LIEBRE
+
+
+
+
+
+    //BUCLE DE JUEGO CON HEURISTICA DE LIEBRE
 
 
 
@@ -307,7 +332,35 @@ object TableroClasicoLyS extends TableroJuego:
 
     //4. Leer elección del jugador
 
-    val eleccion = scala.io.StdIn.readLine().toInt
+    @tailrec
+    def elegido: Int =
+
+      try {
+
+
+        val elegido = scala.io.StdIn.readLine().toInt
+
+        if (listaSequenciada.exists(m => m._1 == elegido))
+
+          elegido
+
+        else
+
+          throw new Exception("\n Elija una opción válida, por favor.\n")
+
+
+      } catch {
+
+        case e: Throwable =>
+
+          println("\nIntroduzca un número, por favor.\n")
+          elegido
+
+      }
+
+    val eleccion = elegido
+
+
 
 
     //Se ejecuta el movimiento y se actualiza el estado
@@ -337,12 +390,12 @@ object TableroClasicoLyS extends TableroJuego:
       case None => bucleJuegoConHeuristicaLiebre(tablero, nuevoEstado)
 
 
-  */
 
 
-  /*
 
-    BUCLE DE JUEGO CON IA DE LA LIEBRE
+
+
+    //BUCLE DE JUEGO CON IA DE LA LIEBRE
 
   @tailrec
   def bucleJuegoConIALiebre(tablero: TableroJuego, estado: Estado, IALiebre: Boolean): Entes.Jugador =
@@ -480,7 +533,27 @@ object TableroClasicoLyS extends TableroJuego:
 
       else
 
-        scala.io.StdIn.readLine().toInt
+        try {
+
+          val elegido = scala.io.StdIn.readLine().toInt
+
+          if (listaSequenciada.exists(m => m._1 == elegido))
+
+            elegido
+
+          else
+
+            throw new Exception("\n Elija una opción válida, por favor.\n")
+
+
+        } catch {
+
+          case e: Throwable =>
+
+            println("\nIntroduzca un número, por favor.\n")
+            eleccion
+
+        }
 
 
     //Se ejecuta el movimiento y se actualiza el estado
@@ -510,10 +583,10 @@ object TableroClasicoLyS extends TableroJuego:
 
       case None => bucleJuegoConIALiebre(tablero, nuevoEstado, IALiebre)
 
-      */
+
 
   @tailrec
-  def bucleJuegoConIALiebre(tablero: TableroJuego, estado: Estado, modoIA: Set[Jugador]): Entes.Jugador =
+  def bucleJuegoConIADoble(tablero: TableroJuego, estado: Estado, modoIA: Set[Jugador]): Entes.Jugador =
 
     //1.pintamos el tablero
 
@@ -598,6 +671,7 @@ object TableroClasicoLyS extends TableroJuego:
 
     //4. Leer elección del jugador
 
+    @tailrec
     def eleccion: Int =
 
       if (estado.turno == Liebre && modoIA.contains(Entes.Jugador.Liebre))
@@ -723,13 +797,34 @@ object TableroClasicoLyS extends TableroJuego:
 
       } else
 
-        scala.io.StdIn.readLine().toInt
+        try {
+
+          val elegido = scala.io.StdIn.readLine().toInt
+
+          if (listaSequenciada.exists(m => m._1 == elegido))
+
+            elegido
+
+          else
+
+            throw new Exception("\n Elija una opción válida, por favor.\n")
+
+
+        }catch {
+
+          case e: Throwable =>
+
+            println("\nIntroduzca un número, por favor.\n")
+            eleccion
+
+        }
 
 
     //Se ejecuta el movimiento y se actualiza el estado
 
     val opcionElegida = eleccion
     val datosSeleccionados = listaSequenciada.filter(m => m._1 == opcionElegida)
+
     val nuevaPos = datosSeleccionados.map(n => n._3).head //coger la lista ya sequenciada y hacer una busqueda por opcion filtrando con un map
 
     val nuevoEstado =
@@ -751,4 +846,4 @@ object TableroClasicoLyS extends TableroJuego:
         println(s"Ha ganado: $ganador!")
         ganador
 
-      case None => bucleJuegoConIALiebre(tablero, nuevoEstado, modoIA)
+      case None => bucleJuegoConIADoble(tablero, nuevoEstado, modoIA)
