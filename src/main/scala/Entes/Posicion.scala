@@ -9,3 +9,6 @@ case class Posicion(columna: Entorno.Columna, fila: Entorno.Fila):
 
     fila.toString + columna.toString
   
+
+  def getX: Int = x
+  def getY: Int = y
