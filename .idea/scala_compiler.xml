@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ScalaCompilerConfiguration">
+    <parameters>
+      <parameter value="-deprecation" />
+    </parameters>
     <option name="separateProdTestSources" value="true" />
     <profile name="sbt 1" modules="liebre_sabuesoPD,liebre_sabuesoPD.main,liebre_sabuesoPD.test,liebre_sabuesopd,liebre_sabuesopd.main,liebre_sabuesopd.test,liebre_sabuesopd_3479,liebre_sabuesopd_3479.main,liebre_sabuesopd_3479.test" />
   </component>

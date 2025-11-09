@@ -7,9 +7,11 @@ import scala.annotation.tailrec
 case object MovimientoLiebre {
 
 
-  private def sabuesosRebasadosPorMovimiento(movimientoAEvaluar: Entes.Posicion, tablero: TableroJuego, estado: Estado): Int =
+  extension [X, Y](t: (X, Y))
 
-    estado.Sabuesos.map(m => m.getX).count(c => c > movimientoAEvaluar.getX)
+    def toStringBonitoLiebre: String =
+
+      "(" + t._1 + ", " + t._2 + ")"
 
 
   @tailrec
@@ -27,20 +29,22 @@ case object MovimientoLiebre {
 
   def algunSabuesoHaSidoRebasado(tablero: TableroJuego, estado: Estado): Boolean =
 
-    sabuesosRebasadosPorMovimiento(estado.Liebre, tablero, estado) > 0
+    FuncionesGeneralesHeuristicas.sabuesosRebasadosPorMovimiento(estado.Liebre, tablero, estado) > 0
 
 
 
   def evaluarMovimiento(tablero: TableroJuego, estado: Estado, destino: Entes.Posicion): (Int, Int) = {
 
 
-    if (algunSabuesoHaSidoRebasado(tablero, estado))
+    if (algunSabuesoHaSidoRebasado(tablero, estado)) {
 
       (FuncionesGeneralesHeuristicas.distanciaEnteAObjetivo(destino, tablero.posicionMetaLiebre), distanciaASabuesos(destino, tablero, estado, estado.Sabuesos))
 
-    else
+    } else
 
-      (sabuesosRebasadosPorMovimiento(destino, tablero, estado), distanciaASabuesos(destino, tablero, estado, estado.Sabuesos))
+      (FuncionesGeneralesHeuristicas.sabuesosRebasadosPorMovimiento(destino, tablero, estado), distanciaASabuesos(destino, tablero, estado, estado.Sabuesos))
   }
+
+  
 
 }
