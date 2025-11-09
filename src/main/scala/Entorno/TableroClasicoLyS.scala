@@ -190,16 +190,20 @@ object TableroClasicoLyS extends TableroJuego:
 
         else
 
-          throw new Exception("\n Elija una opción válida, por favor.\n")
+          throw new IllegalAccessError("\n Elija una opción válida, por favor.\n")
 
 
       } catch {
 
-        case e: Throwable =>
+        case e: IllegalAccessError =>
+
+          println(e.getMessage)
+          elegido
+
+        case e: Exception =>
 
           println("\nIntroduzca un número, por favor.\n")
           elegido
-
       }
 
     val eleccion = elegido
@@ -346,16 +350,21 @@ object TableroClasicoLyS extends TableroJuego:
 
         else
 
-          throw new Exception("\n Elija una opción válida, por favor.\n")
+          throw new IllegalAccessError("\n Elija una opción válida, por favor.\n")
 
 
       } catch {
 
-        case e: Throwable =>
+        case e: IllegalAccessError =>
+
+          println(e.getMessage)
+          elegido
+
+        case e: Exception =>
 
           println("\nIntroduzca un número, por favor.\n")
           elegido
-
+          
       }
 
     val eleccion = elegido
@@ -485,6 +494,7 @@ object TableroClasicoLyS extends TableroJuego:
 
     //4. Leer elección del jugador
 
+    @tailrec
     def eleccion: Int =
 
       if(IALiebre && estado.turno == Liebre)
@@ -543,12 +553,17 @@ object TableroClasicoLyS extends TableroJuego:
 
           else
 
-            throw new Exception("\n Elija una opción válida, por favor.\n")
+            throw new IllegalAccessError("\n Elija una opción válida, por favor.\n")
 
 
         } catch {
 
-          case e: Throwable =>
+          case e: IllegalAccessError =>
+
+            println(e.getMessage)
+            eleccion
+
+          case e: Exception =>
 
             println("\nIntroduzca un número, por favor.\n")
             eleccion
@@ -807,12 +822,17 @@ object TableroClasicoLyS extends TableroJuego:
 
           else
 
-            throw new Exception("\n Elija una opción válida, por favor.\n")
+            throw new IllegalAccessError("\n Elija una opción válida, por favor.\n")
 
 
         }catch {
 
-          case e: Throwable =>
+          case e: IllegalAccessError =>
+
+            println(e.getMessage)
+            eleccion
+
+          case e: Exception =>
 
             println("\nIntroduzca un número, por favor.\n")
             eleccion
