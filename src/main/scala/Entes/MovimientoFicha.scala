@@ -9,7 +9,8 @@ sealed trait MovimientoFicha:
 
 
 
-
+//Aqui tenemos que Movimientos Posibles para la liebre nos devuelve un conjunto con 
+// elementos de tipo (Posicion,Posicion), uno de los cambios que hemos realizado con respecto a la guía
 case object MovimientoLiebre extends MovimientoFicha:
   
   override def movimientosPosibles(tablero: TableroJuego, estado: Estado): Set[(Posicion, Posicion)] =

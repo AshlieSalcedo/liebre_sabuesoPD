@@ -85,7 +85,7 @@ object TableroClasicoLyS extends TableroJuego:
   // --- Comprueba si ha terminado la partida ---
   def esFinPartida(estado: Estado): Option[Entes.Jugador] =
 
-    //la liebre gana si ha llegado a la posición de meta
+    //la liebre gana si ha llegado a la posición de meta o si los sabuesos no pueden moverse más
     //Los sabuesos ganan si la liebre no tiene más posiciones a las que moverse
 
     if (estado.Liebre == posicionMetaLiebre || Entes.MovimientoSabueso.movimientosPosibles(this, estado).isEmpty)
@@ -99,8 +99,6 @@ object TableroClasicoLyS extends TableroJuego:
 
 
   //BUCLE DE JUEGO SIN HEURISTICAS
-
-
 
   @tailrec
   def bucleJuegoBasico(tablero: TableroJuego, estado:Estado):Entes.Jugador =
@@ -119,11 +117,10 @@ object TableroClasicoLyS extends TableroJuego:
 
     //3.Mostramos por pantalla los movimientos del jugador que tiene el turno
 
-    //Hay que cambiar esto para hacerlo bien, salto de linea al final de la ultima opcion y division de opciones por bicho
-    //movimientos.zipWithIndex.foreach{case(mov, i) => println(s"$i,$mov")}
+
     @tailrec
     def imprimirMovimientos(movimientos: Set[(Entes.Posicion, Entes.Posicion)], indiceCriatura: Int = 1, indicesYaUsados: Int = 1, listaYaSequenciados: Set[(Int, Entes.Posicion, Entes.Posicion)] = Set()): Set[(Int, Entes.Posicion, Entes.Posicion)] =
-
+    //nos devolverá un conjunto que contiene elementos con un índice y dos posiciones, una la de partida y otra la de destino
 
       @tailrec
       def imprimirAux(lista: Set[Entes.Posicion], posicionBichoSiendoListado: Entes.Posicion, indiceOpcion: Int = 1, listaSiendoSequenciada: Set[(Int, Entes.Posicion, Entes.Posicion)] = Set()): Set[(Int, Entes.Posicion, Entes.Posicion)]  =
@@ -144,7 +141,7 @@ object TableroClasicoLyS extends TableroJuego:
           listaSiendoSequenciada
 
 
-
+      //diferenciamos entre si se trata del turno de la liebre o de los sabuesos
       if (estado.turno == Entes.Jugador.Liebre)
 
         val posicionLiebre = movimientos.head._1
@@ -170,7 +167,7 @@ object TableroClasicoLyS extends TableroJuego:
 
 
 
-
+    //Aqui tenemos nuestra lista preparada
     val listaSequenciada = imprimirMovimientos(movimientos)
 
 
@@ -180,8 +177,7 @@ object TableroClasicoLyS extends TableroJuego:
     def elegido: Int =
 
       try {
-
-
+      //Leemos lo ingresado por el usuario
         val elegido = scala.io.StdIn.readLine().toInt
 
         if (listaSequenciada.exists(m => m._1 == elegido))
@@ -194,7 +190,7 @@ object TableroClasicoLyS extends TableroJuego:
 
 
       } catch {
-
+        //Con catch tratamos las excepciones para evitar fallos
         case e: IllegalAccessError =>
 
           println(e.getMessage)
@@ -225,7 +221,7 @@ object TableroClasicoLyS extends TableroJuego:
         Estado(Liebre= estado.Liebre,Sabuesos = estado.Sabuesos - datosSeleccionados.head._2 + datosSeleccionados.head._3 ,turno = Entes.Jugador.Liebre)
 
     
-    
+    //Será fin de partida si alguno ha ganado, si no continuamos
     esFinPartida(nuevoEstado) match
 
       case Some(ganador) =>
@@ -423,7 +419,7 @@ object TableroClasicoLyS extends TableroJuego:
 
     //3.Mostramos por pantalla los movimientos del jugador que tiene el turno
 
-    //Hay que cambiar esto para hacerlo bien, salto de linea al final de la ultima opcion y division de opciones por bicho
+
     @tailrec
     def imprimirMovimientos(movimientos: Set[(Entes.Posicion, Entes.Posicion)], indiceCriatura: Int = 1, indicesYaUsados: Int = 1, listaYaSequenciados: Set[(Int, Entes.Posicion, Entes.Posicion)] = Set()): Set[(Int, Entes.Posicion, Entes.Posicion)] =
 
@@ -503,7 +499,7 @@ object TableroClasicoLyS extends TableroJuego:
 
 
           try{
-
+          //Necesitamos sleep para dar tiempo al usuario a ver lo que ocurre y que la IA no actúe inmediatamente
             Thread.sleep(800)
 
           }catch {

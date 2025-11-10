@@ -12,7 +12,7 @@ object LiebreYSabueso extends App {
   
   
   
-  
+ //0.Tenemos una bienvenida
   private def bucleDelPrograma(): Unit = {
 
 
@@ -25,7 +25,7 @@ object LiebreYSabueso extends App {
 
 
 
-
+//Decide si juega con IA o sin IA
 
   @tailrec
   private def selector1(): Unit =
@@ -56,7 +56,7 @@ object LiebreYSabueso extends App {
 
 
 
-
+//Decide si utlizar o no la heurística para la liebre
   @tailrec
   private def selector4(): Unit =
 
@@ -131,7 +131,7 @@ object LiebreYSabueso extends App {
 
         @tailrec
         def selector7(): Unit =
-
+         //Damos la opción de jugar otra partida
           println("\n¿Quieres jugar otra partida? S/N\n")
           val seleccionDelUsuario7 = scala.io.StdIn.readLine()
 
@@ -141,7 +141,7 @@ object LiebreYSabueso extends App {
 
               @tailrec
               def selector8(): Unit =
-
+               //Podemos jugar otra partida con el modo escogido anteriormente
                 println("¿Quieres jugar con las mismas opciones? S/N\n")
                 val seleccionDelUsuario8 = scala.io.StdIn.readLine()
 
@@ -183,7 +183,7 @@ object LiebreYSabueso extends App {
 
 
 
-
+//Podemos tener IA tanto para la liebre como para los Sabuesos
   @tailrec
   private def selector2(): Unit =
 
@@ -232,7 +232,7 @@ object LiebreYSabueso extends App {
                 }
 
               selector9()
-
+            //Si la respuesta es no entonces finalizamos
             case "N" | "n" => sys.exit(0)
 
             case _ =>
@@ -261,7 +261,7 @@ object LiebreYSabueso extends App {
 
 
 
-
+//Seleccionamos el tipo de jugador
   @tailrec
   private def selector3(): Unit =
 
